@@ -1,0 +1,24 @@
+*{
+  font-family: 'Raleway', sans-serif;
+}
+
+a:-webkit-any-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+body{
+  background-color: #EDEDED;
+}
+
+
+::-webkit-scrollbar{
+  width: 7px;
+}
+::-webkit-scrollbar-thumb{
+  background-color: #c8807c;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track{
+  background-color: #EDEDED;
+}
