@@ -23,16 +23,16 @@ const Navbar = ({ setPage, setFilterSelected, page }) => {
             }
             setSearchPerformed(false);
 
-        } else if (!isHomePage){
-
         }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setPage(1);
-        dispatch(fetchAnimeList('search', 1, searchTerm));
-        setSearchPerformed(true);
+        if (searchTerm.trim() !== '') {
+            setPage(1);
+            dispatch(fetchAnimeList('search', 1, searchTerm));
+            setSearchPerformed(true);
+        }
     };
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
