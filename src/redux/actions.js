@@ -18,7 +18,7 @@ export const fetchAnimeError = () => ({
     type: 'FETCH_ANIME_ERROR',
 });
 
-export const fetchAnimeList = (filter, search='') => async (dispatch) => {
+export const fetchAnimeList = (filter,page = 1, search='') => async (dispatch) => {
     dispatch(fetchAnimeStart());
     try {
         const baseUrl = "https://api.jikan.moe/v4"
@@ -27,26 +27,27 @@ export const fetchAnimeList = (filter, search='') => async (dispatch) => {
 
         switch (filter) {
             case 'popular':
-                apiUrl = `${baseUrl}/top/anime?filter=bypopularity`;
+                apiUrl = `${baseUrl}/top/anime?filter=bypopularity&page=${page}`;
                 break;
             case 'search':
-                // Modify the URL and add logic for search
-                apiUrl = `${baseUrl}/anime?q=${search}&order_by=popularity&sort=asc`;
+                apiUrl = `${baseUrl}/anime?q=${search}&order_by=popularity&page=${page}&sort=asc`;
                 break;
             case 'upcoming':
-                apiUrl = `${baseUrl}/top/anime?filter=upcoming`;
+                apiUrl = `${baseUrl}/top/anime?filter=upcoming&page=${page}`;
                 break;
             case 'airing':
-                apiUrl = `${baseUrl}/top/anime?filter=airing`;
+                apiUrl = `${baseUrl}/top/anime?filter=airing&page=${page}`;
                 break;
             case 'top':
-                apiUrl = `${baseUrl}/top/anime`;
+                apiUrl = `${baseUrl}/top/anime?page=${page}`;
                 break;
         }
+        console.log("Request URL:", apiUrl);
 
         const response = await axios.get(apiUrl);
+        response.data.data.pagination = {...response.data.pagination};
         dispatch(fetchAnimeSuccess(response.data.data));
-        console.log("data",response.data)
+        console.log("data",response.data.data)
 
     } catch (error) {
         console.error('Error fetching anime list:', error);

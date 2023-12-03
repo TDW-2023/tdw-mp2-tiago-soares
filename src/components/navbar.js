@@ -5,16 +5,24 @@ import logo from '../assets/logotipo.svg';
 import { useDispatch } from 'react-redux';
 import { fetchAnimeList } from '../redux/actions';
 
-const Navbar = ({ onFilterChange }) => {
+const Navbar = ({ setPage, setFilterSelected, page }) => {
     const dispatch = useDispatch();
     const [searchTerm, setSearchTerm] = useState('');
     const [listFilter, setListFilter] = useState('popular');
+    const [searchPerformed, setSearchPerformed] = useState(false);
     const location = useLocation();
     const isHomePage = location.pathname === '/';
     const handleFilterClick = (filter) => {
         if (isHomePage && listFilter !== filter){
             setListFilter(filter);
-            onFilterChange(filter);
+            if (page !== 1) {
+                setPage(1);
+                setFilterSelected(filter);
+            } else {
+                setFilterSelected(filter);
+            }
+            setSearchPerformed(false);
+
         } else if (!isHomePage){
 
         }
@@ -22,7 +30,9 @@ const Navbar = ({ onFilterChange }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(fetchAnimeList('search', searchTerm));
+        setPage(1);
+        dispatch(fetchAnimeList('search', 1, searchTerm));
+        setSearchPerformed(true);
     };
 
     return (
@@ -31,10 +41,30 @@ const Navbar = ({ onFilterChange }) => {
                 <img className="logo" src={logo} alt="Logo" />
             </Link>
             <div className="right-side">
-                <div onClick={() => handleFilterClick('popular')}>Popular</div>
-                <div onClick={() => handleFilterClick('upcoming')}>Upcoming</div>
-                <div onClick={() => handleFilterClick('airing')}>Airing</div>
-                <div onClick={() => handleFilterClick('top')}>Top</div>
+                <div
+                    className={searchPerformed ? '' : listFilter === 'popular' ? 'selected' : ''}
+                    onClick={() => handleFilterClick('popular')}
+                >
+                    Popular
+                </div>
+                <div
+                    className={searchPerformed ? '' : listFilter === 'upcoming' ? 'selected' : ''}
+                    onClick={() => handleFilterClick('upcoming')}
+                >
+                    Upcoming
+                </div>
+                <div
+                    className={searchPerformed ? '' : listFilter === 'airing' ? 'selected' : ''}
+                    onClick={() => handleFilterClick('airing')}
+                >
+                    Airing
+                </div>
+                <div
+                    className={searchPerformed ? '' : listFilter === 'top' ? 'selected' : ''}
+                    onClick={() => handleFilterClick('top')}
+                >
+                    Top
+                </div>
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
@@ -69,6 +99,9 @@ const NavbarStyle = styled.div`
     div {
       font-size: 1.2rem;
       font-weight: 600;
+      &.selected {
+        color: #FF3D00;
+      }
       &:hover{
         color: #FF3D00;
       }

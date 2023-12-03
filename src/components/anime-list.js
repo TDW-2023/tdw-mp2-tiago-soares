@@ -1,37 +1,47 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { fetchAnimeList } from '../redux/actions';
 import styled from 'styled-components';
-import {Link} from "react-router-dom";
-import Loader from "./loader";
+import { Link } from 'react-router-dom';
+import Loader from './loader';
 
-const AnimeList = ({ animeList, loading, fetchAnimeList, onFilterChange}) => {
+const AnimeList = ({ animeList, loading, page, setPage, onFilterChange, filterSelected}) => {
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+    };
 
     useEffect(() => {
-        fetchAnimeList('popular'); // Initial fetch with default filter
-    }, [fetchAnimeList]);
-
-
+        onFilterChange(undefined, page);
+    }, [page, onFilterChange]);
 
     return (
         <AnimeListStyle>
-            {loading && <Loader/>}
-            {!loading &&
-                animeList.map((anime) => (
-                    <Link className={"card"} to={`/anime/${anime.mal_id}`} key={anime.mal_id}>
-                        <div className={"score"}>{anime.score}</div>
-                        <img src={anime.images.jpg.image_url}/>
-                        <div>
-                            <div className={"genres"}>
-                                {anime.genres.map((genre) => (
-                                    <div key={genre.mal_id}>{genre.name}</div>
-                                ))}
+            {loading && <Loader />}
+            {!loading && (
+                <>
+                    {animeList.map((anime) => (
+                        <Link className={'card'} to={`/anime/${anime.mal_id}`} key={anime.mal_id}>
+                            {filterSelected !== 'upcoming' && <div className={'score'}>{anime.score}</div>}
+                            <img src={anime.images.jpg.image_url} alt={anime.title} />
+                            <div>
+                                <div className={'genres'}>
+                                    {anime.genres.map((genre) => (
+                                        <div key={genre.mal_id}>{genre.name}</div>
+                                    ))}
+                                </div>
+                                <p className={'title'}>{anime.title}</p>
                             </div>
-                            <p className={"title"}>{anime.title}</p>
-                        </div>
-
-                    </Link>
-                ))}
+                        </Link>
+                    ))}
+                    <div>
+                        <button onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
+                            Previous
+                        </button>
+                        <span>{page}</span>
+                        <button onClick={() => handlePageChange(page + 1)}>Next</button>
+                    </div>
+                </>
+            )}
         </AnimeListStyle>
     );
 };

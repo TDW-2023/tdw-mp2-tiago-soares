@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { fetchAnimeDetail } from '../redux/actions';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import Loader from "./loader";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -20,6 +20,7 @@ const AnimeDetail = ({ animeDetails, loading, fetchAnimeDetail }) => {
             {loading && <Loader />}
             {!loading && (
                 <>
+                    <Link className="back" to={"/"}><i className="fa fa-arrow-left"></i> Back</Link>
                     <div className="animeDetails">
                         <div className="overview" style={{ alignItems: showMore ? 'center' : 'flex-start' }}>
                             <img src={animeDetails.images?.jpg.large_image_url}/>
@@ -91,10 +92,19 @@ const AnimeDetail = ({ animeDetails, loading, fetchAnimeDetail }) => {
 
 const AnimeItemStyled = styled.div`
   
-  padding: 3rem 10%;
+  padding: 2rem 10%;
   gap: 2rem;
   display: flex;
   flex-direction: column;
+  
+  .back{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-weight: 600;
+    font-size: 25px;
+    width: fit-content;
+  }
   
   .react-tabs__tab-panel{
     background-color: white;
